@@ -15,7 +15,7 @@ fi
 show_usage() {
   echo "Usage:"
   echo ""
-  echo "giffify -i input_path.mp4 -o output_path.gif [-w width] [-y height] [-f fps=15] [-h shows this message]"
+  echo "giffify -i input_path.mp4 -o output_path.gif [-w width] [-y height] [-f fps=15] [-s speed=2] [-h shows this message]"
 }
 
 input_path=""
@@ -23,8 +23,9 @@ output_path=""
 dw=-1
 dh=-1
 fps=15
+speed=1
 
-while getopts ":i:o:w:y:f:h" opt; do
+while getopts ":i:o:w:y:f:s:h" opt; do
   case $opt in
     i )
       input_path=$OPTARG
@@ -40,6 +41,9 @@ while getopts ":i:o:w:y:f:h" opt; do
       ;;
     f )
       fps=$OPTARG
+      ;;
+    s )
+      speed=$OPTARG
       ;;
     h )
       show_usage
@@ -68,7 +72,7 @@ if [[ -z "$output_path" ]]; then
 fi
 
 palette="palette.png"
-filters="fps=$fps,scale=$dw:$dh:flags=lanczos"
+filters="fps=$fps,setpts=1/$speed*PTS,scale=$dw:$dh:flags=lanczos"
 
 ffmpeg -v warning -i $input_path -vf "$filters,palettegen" -y $palette
 if [[ -f $palette ]]; then

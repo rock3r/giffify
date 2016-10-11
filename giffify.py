@@ -29,6 +29,7 @@ def parse_cli_arguments():
 	parser.add_argument('-dw', '--desired-width', type=int, default=-1)
 	parser.add_argument('-dh', '--desired-height', type=int, default=-1)
 	parser.add_argument('-fps', type=int, default=15, help='Output frames per second. Default: 15 fps')
+	parser.add_argument('-speed', type=int, default=1, help='Playback speed, e.g. 0.5 is half-speed, 2 is double-speed. Default: 1')
 	parser.add_argument('-s', '--start-time', type=int, default=-1, help='Start timestamp, as [-][HH:]MM:SS[.m...] or [-]S+[.m...]')
 	parser.add_argument('-e', '--end-time', type=int, default=-1, help='End timestamp, as [-][HH:]MM:SS[.m...] or [-]S+[.m...]. Overridden by -d')
 	parser.add_argument('-d', '--duration', type=int, default=-1, help='Duration, as [-][HH:]MM:SS[.m...] or [-]S+[.m...]. Overrides -e')
@@ -58,6 +59,7 @@ input_path = args.video
 output_path = gif_path(input_path) if args.outfile is None else args.outfile
 
 fps = args.fps
+speed = args.speed
 
 dw = args.desired_width
 dh = args.desired_height
@@ -71,7 +73,7 @@ if args.rotate:
 else:
     rotate_filters = ""
 
-filters = "fps={fps},scale={dw}:{dh}:flags=lanczos".format(fps = fps, dw = dw, dh = dh)
+filters = "fps={fps},setpts=1/{speed}*PTS,scale={dw}:{dh}:flags=lanczos".format(fps = fps, speed = speed, dw = dw, dh = dh)
 output_filters = "{rotate}{filters} [x]; [x][1:v] paletteuse".format(filters = filters, rotate = rotate_filters)
 
 palette_filters = "{rotate}{filters},palettegen".format(filters = filters, rotate = rotate_filters)
