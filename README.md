@@ -15,7 +15,7 @@ Works on both Linux and macOS.
 2. Make sure you have installed `ffmpeg` and you have it on your `PATH`. Easiest way is to use a package manager. On macOS, for example, using [Homebrew](http://brew.sh/):
 
   ```bash
-  $ bash install ffmpeg
+  $ brew install ffmpeg
   ```
 
 3. Then simply use it to convert movies. It can be as simple as:
