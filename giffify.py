@@ -29,7 +29,7 @@ def parse_cli_arguments():
 	parser.add_argument('-dw', '--desired-width', type=int, default=-1)
 	parser.add_argument('-dh', '--desired-height', type=int, default=-1)
 	parser.add_argument('-fps', type=int, default=15, help='Output frames per second. Default: 15 fps')
-	parser.add_argument('-speed', type=int, default=1, help='Playback speed, e.g. 0.5 is half-speed, 2 is double-speed. Default: 1')
+	parser.add_argument('-speed', type=float, default=1, help='Playback speed, e.g. 0.5 is half-speed, 2 is double-speed. Default: 1')
 	parser.add_argument('-s', '--start-time', type=int, default=-1, help='Start timestamp, as [-][HH:]MM:SS[.m...] or [-]S+[.m...]')
 	parser.add_argument('-e', '--end-time', type=int, default=-1, help='End timestamp, as [-][HH:]MM:SS[.m...] or [-]S+[.m...]. Overridden by -d')
 	parser.add_argument('-d', '--duration', type=int, default=-1, help='Duration, as [-][HH:]MM:SS[.m...] or [-]S+[.m...]. Overrides -e')
