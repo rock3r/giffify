@@ -11,8 +11,12 @@ import argparse, sys, subprocess, tempfile
 from os.path import splitext
 from distutils.spawn import find_executable
 
-
-
+def look_for_adb_or_abort():
+	adb_path = find_executable('adb')
+	if adb_path == None:
+	  print "** ComputerSaysNoError **" 
+	  print "You need to have adb installed on your system and on the path for this to work" 
+	  exit(1)
 
 def look_for_ffmpeg_or_abort():
 	ffmpeg_path = find_executable('ffmpeg')
@@ -24,15 +28,15 @@ def look_for_ffmpeg_or_abort():
 def parse_cli_arguments():
 	parser = argparse.ArgumentParser(description='Processes a video into a gif.')
 	parser.add_argument('video', type=str, help='The video to be processed')
-	parser.add_argument('-r', '--rotate', dest='rotate', action='store_true', help='Rotate output 270 degrees clockwise (useful for Genymotion)')
 	parser.add_argument('-o', '--outfile', type=str, help='Target path')
 	parser.add_argument('-dw', '--desired-width', type=int, default=-1)
 	parser.add_argument('-dh', '--desired-height', type=int, default=-1)
-	parser.add_argument('-fps', type=int, default=15, help='Output frames per second. Default: 15 fps')
-	parser.add_argument('-speed', type=float, default=1, help='Playback speed, e.g. 0.5 is half-speed, 2 is double-speed. Default: 1')
+	parser.add_argument('-f', '--fps', type=int, default=15, help='Output frames per second. Default: 15 fps')
 	parser.add_argument('-s', '--start-time', type=int, default=-1, help='Start timestamp, as [-][HH:]MM:SS[.m...] or [-]S+[.m...]')
 	parser.add_argument('-e', '--end-time', type=int, default=-1, help='End timestamp, as [-][HH:]MM:SS[.m...] or [-]S+[.m...]. Overridden by -d')
 	parser.add_argument('-d', '--duration', type=int, default=-1, help='Duration, as [-][HH:]MM:SS[.m...] or [-]S+[.m...]. Overrides -e')
+	parser.add_argument('-c', '--crop', type=str, help='Output crop, as per ffmpeg\'s crop filter specs (i.e., out_w:out_h:x:y)')
+	parser.add_argument('-r', '--rotate', dest='rotate', action='store_true', help='Rotate output 270 degrees clockwise (useful for Genymotion)')
 
 	return parser.parse_args()
 
@@ -51,6 +55,7 @@ def insert_before_output_path(args, elements):
 	return args[:index] + elements + args[index:]
 
 
+look_for_adb_or_abort()
 look_for_ffmpeg_or_abort()
 
 args = parse_cli_arguments()
@@ -59,7 +64,6 @@ input_path = args.video
 output_path = gif_path(input_path) if args.outfile is None else args.outfile
 
 fps = args.fps
-speed = args.speed
 
 dw = args.desired_width
 dh = args.desired_height
@@ -67,20 +71,27 @@ dh = args.desired_height
 s = args.start_time
 e = args.end_time
 d = args.duration
+c = args.crop
 
 if args.rotate:
-	rotate_filters = "transpose=2,"
+	rotate_filters = 'transpose=2,'
 else:
     rotate_filters = ""
 
-filters = "fps={fps},setpts=1/{speed}*PTS,scale={dw}:{dh}:flags=lanczos".format(fps = fps, speed = speed, dw = dw, dh = dh)
-output_filters = "{rotate}{filters} [x]; [x][1:v] paletteuse".format(filters = filters, rotate = rotate_filters)
+if c is not None:
+	crop_filter = "crop={crop},".format(crop = c)
+else:
+	crop_filter = ""
 
-palette_filters = "{rotate}{filters},palettegen".format(filters = filters, rotate = rotate_filters)
+filters = "{rotate}{crop}fps={fps},scale={dw}:{dh}:flags=lanczos".format(rotate = rotate_filters, crop = crop_filter, fps = fps, dw = dw, dh = dh)
+
+palette_filters = "{filters},palettegen".format(filters = filters)
 palette_path = get_palette_path()
 
+output_filters = "{filters} [x]; [x][1:v] paletteuse".format(filters = filters)
+
 ffmpeg_args_palette = ['ffmpeg', 
-		'-v', 'warning', 
+		'-v', 'warning',
 		'-i', input_path, 
 		'-vf', palette_filters,
 		'-y', palette_path]
