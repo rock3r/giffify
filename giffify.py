@@ -3,7 +3,7 @@
 # License for any modification to the original (linked below):
 # ----------------------------------------------------------------------------
 # "THE BEER-WARE LICENSE" (Revision 42):
-# Sebastiano Poggi and Daniele Conti wrote this file. As long as you retain 
+# Sebastiano Poggi and Daniele Conti wrote this file. As long as you retain
 # this notice you can do whatever you want with this stuff. If we meet some day,
 # and you think this stuff is worth it, you can buy us a beer in return.
 
@@ -14,15 +14,15 @@ from distutils.spawn import find_executable
 def look_for_adb_or_abort():
 	adb_path = find_executable('adb')
 	if adb_path == None:
-	  print "** ComputerSaysNoError **" 
-	  print "You need to have adb installed on your system and on the path for this to work" 
+	  print "** ComputerSaysNoError **"
+	  print "You need to have adb installed on your system and on the path for this to work"
 	  exit(1)
 
 def look_for_ffmpeg_or_abort():
 	ffmpeg_path = find_executable('ffmpeg')
 	if ffmpeg_path == None:
-	  print "** ComputerSaysNoError **" 
-	  print "You need to have ffmpeg installed on your system and on the path for Giffify to work" 
+	  print "** ComputerSaysNoError **"
+	  print "You need to have ffmpeg installed on your system and on the path for Giffify to work"
 	  exit(1)
 
 def parse_cli_arguments():
@@ -51,7 +51,7 @@ def get_palette_path():
         palette_file.close()
 
 def insert_before_output_path(args, elements):
-	index = args.index('-y') 
+	index = args.index('-y')
 	return args[:index] + elements + args[index:]
 
 
@@ -90,15 +90,15 @@ palette_path = get_palette_path()
 
 output_filters = "{filters} [x]; [x][1:v] paletteuse".format(filters = filters)
 
-ffmpeg_args_palette = ['ffmpeg', 
+ffmpeg_args_palette = ['ffmpeg',
 		'-v', 'warning',
-		'-i', input_path, 
+		'-i', input_path,
 		'-vf', palette_filters,
 		'-y', palette_path]
-ffmpeg_args_gif = ['ffmpeg', 
-		'-v', 'warning', 
-		'-i', input_path, 
-		'-i', palette_path, 
+ffmpeg_args_gif = ['ffmpeg',
+		'-v', 'warning',
+		'-i', input_path,
+		'-i', palette_path,
 		'-lavfi', output_filters,
 		'-y', output_path]
 
