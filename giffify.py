@@ -11,13 +11,6 @@ import argparse, sys, subprocess, tempfile
 from os.path import splitext
 from distutils.spawn import find_executable
 
-def look_for_adb_or_abort():
-	adb_path = find_executable('adb')
-	if adb_path == None:
-	  print "** ComputerSaysNoError **"
-	  print "You need to have adb installed on your system and on the path for this to work"
-	  exit(1)
-
 def look_for_ffmpeg_or_abort():
 	ffmpeg_path = find_executable('ffmpeg')
 	if ffmpeg_path == None:
@@ -54,8 +47,6 @@ def insert_before_output_path(args, elements):
 	index = args.index('-y')
 	return args[:index] + elements + args[index:]
 
-
-look_for_adb_or_abort()
 look_for_ffmpeg_or_abort()
 
 args = parse_cli_arguments()
