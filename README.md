@@ -7,7 +7,7 @@ Works on both Linux and macOS.
 
 ## Setup and usage
 
-1. Copy the version you prefer (Python 2.x or Bash) to your computer, and make it executable. For example:
+1. Copy the version you prefer (Python 3.x or Bash) to your computer, and make it executable. For example:
 
   ```bash
   $ chmod a+x giffify.py
