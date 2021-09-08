@@ -14,8 +14,8 @@ from distutils.spawn import find_executable
 def look_for_ffmpeg_or_abort():
 	ffmpeg_path = find_executable('ffmpeg')
 	if ffmpeg_path == None:
-	  print "** ComputerSaysNoError **"
-	  print "You need to have ffmpeg installed on your system and on the path for Giffify to work"
+	  print("** ComputerSaysNoError **")
+	  print("You need to have ffmpeg installed on your system and on the path for Giffify to work")
 	  exit(1)
 
 def parse_cli_arguments():
@@ -102,10 +102,10 @@ if e != -1:
 if d != -1:
 	ffmpeg_args_gif = insert_before_output_path(ffmpeg_args_gif, ["-t", str(d)])
 
-print "First pass: extracting colour palette, hang tight..."
+print("First pass: extracting colour palette, hang tight...")
 subprocess.call(ffmpeg_args_palette)
 
-print "Second pass: converting that nice video into a sweet, high quality gif..."
+print("Second pass: converting that nice video into a sweet, high quality gif...")
 subprocess.call(ffmpeg_args_gif)
 
-print "Done! Now go and show off to your friends and colleagues"
+print("Done! Now go and show off to your friends and colleagues")
